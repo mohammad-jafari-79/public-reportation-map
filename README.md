@@ -34,13 +34,86 @@
 
 ## نصب و راه‌اندازی 🚀
 
-### پیش‌نیازها
+### روش اول: استفاده از Docker (توصیه می‌شود) 🐳
+
+#### پیش‌نیازها
+
+- Docker 20.10+
+- Docker Compose 2.0+
+
+#### راه‌اندازی سریع
+
+1. **کلون کردن پروژه:**
+
+```bash
+git clone <repository-url>
+cd "public reportation map"
+```
+
+2. **اجرای پروژه:**
+
+```bash
+# اجرای تمام سرویس‌ها (PostgreSQL, Backend, Frontend)
+docker-compose up -d
+
+# صبر برای بالا آمدن سرویس‌ها (حدود 30 ثانیه)
+```
+
+3. **مقداردهی اولیه دیتابیس:**
+
+```bash
+docker exec -it city_reports_backend python init_db.py
+```
+
+4. **دسترسی به برنامه:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
+
+#### دستورات مفید Docker
+
+```bash
+# مشاهده وضعیت سرویس‌ها
+docker-compose ps
+
+# مشاهده لاگ‌ها
+docker-compose logs -f
+
+# توقف سرویس‌ها
+docker-compose down
+
+# ریبیلد و اجرای مجدد
+docker-compose up -d --build
+```
+
+#### استقرار Production با Docker
+
+1. **تنظیمات محیطی:**
+
+```bash
+cp .env.example .env
+nano .env  # ویرایش و تغییر پسوردها و تنظیمات
+```
+
+2. **اجرا با Nginx:**
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+برای راهنمای کامل Docker، فایل [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) را مطالعه کنید.
+
+---
+
+### روش دوم: نصب دستی (Manual Installation)
+
+#### پیش‌نیازها
 
 - Python 3.11+
 - Node.js 18+
 - PostgreSQL 14+ با PostGIS Extension
 
-### Backend
+#### Backend
 
 1. نصب PostgreSQL و ایجاد دیتابیس:
 
@@ -179,20 +252,50 @@ npm run dev
 
 ## استقرار (Deployment) 🌐
 
-### Backend
+### با Docker (توصیه می‌شود)
+
+#### Development
+
+```bash
+docker-compose up -d
+docker exec -it city_reports_backend python init_db.py
+```
+
+#### Production
+
+```bash
+# تنظیمات .env
+cp .env.example .env
+# ویرایش .env و تغییر:
+# - POSTGRES_PASSWORD
+# - SECRET_KEY
+# - NUXT_PUBLIC_API_BASE
+
+# اجرا
+docker-compose -f docker-compose.prod.yml up -d
+docker exec -it city_reports_backend python init_db.py
+```
+
+**نکات امنیتی:**
+
+- پسورد دیتابیس را تغییر دهید
+- SECRET_KEY را با یک رشته تصادفی 32+ کاراکتری جایگزین کنید
+- از HTTPS استفاده کنید (Let's Encrypt)
+- پورت‌های غیرضروری را ببندید
+- بکاپ منظم از دیتابیس بگیرید
+
+### بدون Docker
+
+#### Backend
 
 - با Gunicorn یا Uvicorn
 - نیاز به PostgreSQL با PostGIS
 - تنظیم CORS برای فرانت‌اند
 
-### Frontend
+#### Frontend
 
 - Build: `npm run build`
 - استقرار با Vercel, Netlify یا سرور Node.js
-
-## مجوز 📄
-
-این پروژه تحت مجوز MIT منتشر شده است.
 
 ## مشارکت 🤝
 
@@ -202,7 +305,3 @@ npm run dev
 2. یک branch جدید بسازید
 3. تغییرات خود را commit کنید
 4. Push کنید و Pull Request ایجاد کنید
-
-## تماس 📧
-
-برای سوالات و پشتیبانی، با ما تماس بگیرید.
