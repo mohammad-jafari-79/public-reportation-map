@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgis/postgis:14-3.3
+    container_name: city_reports_db
+    environment:
+      POSTGRES_DB: city_reports
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: M8665508j79
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - city_reports_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: city_reports_backend
+    environment:
+      DATABASE_URL: postgresql://postgres:M8665508j79@postgres:5432/city_reports
+      SECRET_KEY: your-secret-key-change-in-production-min-32-chars-required
+      ACCESS_TOKEN_EXPIRE_MINUTES: 10080
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - city_reports_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: city_reports_frontend
+    environment:
+      NUXT_PUBLIC_API_BASE: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - city_reports_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  city_reports_network:
+    driver: bridge

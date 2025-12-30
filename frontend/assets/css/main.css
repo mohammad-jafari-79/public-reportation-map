@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Vazir";
+  src: url("../font/Vazir-Variable.woff2") format("woff2"),
+    url("../font/Vazir-Variable.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazir";
+  src: url("../font/Vazir-Bold.woff2") format("woff2"),
+    url("../font/Vazir-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-gray-50 text-gray-900;
+    direction: rtl;
+    font-family: "Vazir", sans-serif;
+  }
+}
+
+.leaflet-container {
+  @apply h-full w-full;
+}
+
+/* Hide Leaflet attribution */
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+.leaflet-bottom.leaflet-right {
+  display: none !important;
+}
