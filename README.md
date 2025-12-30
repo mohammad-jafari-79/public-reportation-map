@@ -296,12 +296,3 @@ docker exec -it city_reports_backend python init_db.py
 
 - Build: `npm run build`
 - استقرار با Vercel, Netlify یا سرور Node.js
-
-## مشارکت 🤝
-
-برای مشارکت:
-
-1. Fork کنید
-2. یک branch جدید بسازید
-3. تغییرات خود را commit کنید
-4. Push کنید و Pull Request ایجاد کنید
